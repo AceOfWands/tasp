@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: Tool-Augmented Semantic Parser
+  jpa:
+    hibernate:
+      ddl-auto: ${POSTGRES_DDL_AUTO:update}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/tasp}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:password}
+
+langchain4j:
+  open-ai:
+    chat-model:
+      api-key: ${OPENAI_API_KEY}
+      model-name: ${OPENAI_MODEL_NAME:gpt-5-nano}
+      max-completion-tokens: ${OPENAI_MAX_TOKENS:4096}
+      timeout: ${OPENAI_TIMEOUT:30s}
+
+tasp:
+  tdb:
+    location: ${TDB2_LOCATION:./data/tdb2}
+  entity-resolution:
+    top-k: ${ENTITY_RESOLUTION_TOP_K:5}
+    max-iterations: ${ENTITY_RESOLUTION_MAX_ITERATIONS:3}
+    expand-threshold-factor: ${ENTITY_RESOLUTION_EXPAND_THRESHOLD_FACTOR:1.1}
+    classifier:
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+      model: ${ENTITY_SELECTOR_MODEL:clef-flash}
+      timeout: ${OLLAMA_TIMEOUT:30s}
+
+logging:
+  level:
+    root: ${LOGGING_LEVEL:DEBUG}
