@@ -17,12 +17,12 @@ import java.util.List;
  * Operands are attached to the innermost operator that still needs them.
  * Expressions are created in the given model; an operator is only materialised when the final expression is collapsed.
  */
-public class ALCTools extends AbstractToolSet {
+public class ELUTools extends AbstractToolSet {
     private final EntityService entityService;
     private final OntModel model;
     private final boolean storeEntitiesIfNotFound;
 
-    public ALCTools(
+    public ELUTools(
             ExpressionBuilder expressionBuilder,
             EntityService entityService,
             OntModel model,

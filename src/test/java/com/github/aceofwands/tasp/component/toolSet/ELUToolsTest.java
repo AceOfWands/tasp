@@ -19,7 +19,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ALCToolsTest {
+class ELUToolsTest {
 
     private static final String NS = "https://example.com#";
 
@@ -30,7 +30,7 @@ class ALCToolsTest {
 
     private static String show(OntClass c) {
         if (c instanceof OntClass.IntersectionOf i) {
-            return i.components().map(ALCToolsTest::show)
+            return i.components().map(ELUToolsTest::show)
                     .collect(java.util.stream.Collectors.joining(" & ", "(", ")"));
         }
         if (c instanceof OntClass.ObjectSomeValuesFrom r) {
@@ -48,7 +48,7 @@ class ALCToolsTest {
         ExpressionBuilder builder = newBuilder();
         when(entityService.resolveClass("a generated class", true, true)).thenReturn(NS + "GeneratedClass");
 
-        ALCTools tools = new ALCTools(builder, entityService, model, true);
+        ELUTools tools = new ELUTools(builder, entityService, model, true);
         tools.addNamedClassToCurrentExpression("a generated class");
 
         assertThat(builder.collapse()).isEqualTo(model.createOntClass(NS + "GeneratedClass"));
@@ -62,7 +62,7 @@ class ALCToolsTest {
         when(entityService.resolveClass("hospital", false, true)).thenReturn(NS + "Hospital");
         when(entityService.resolveProperty("works in", false, true)).thenReturn(NS + "worksIn");
 
-        ALCTools tools = new ALCTools(builder, entityService, model, false);
+        ELUTools tools = new ELUTools(builder, entityService, model, false);
         assertThat(tools.addIntersectToCurrentExpression(2)).isEqualTo("OK");
         tools.addNamedClassToCurrentExpression("doctor");
         tools.addExistsPropertyToCurrentExpression("works in");
@@ -76,7 +76,7 @@ class ALCToolsTest {
         ExpressionBuilder builder = newBuilder();
         when(entityService.resolveClass(eq("doctor"), eq(false), eq(true))).thenReturn(NS + "Doctor");
 
-        ALCTools tools = new ALCTools(builder, entityService, model, false);
+        ELUTools tools = new ELUTools(builder, entityService, model, false);
         tools.addIntersectToCurrentExpression(2);
         tools.addNamedClassToCurrentExpression("doctor");
         tools.addNamedClassToCurrentExpression("doctor");
@@ -86,7 +86,7 @@ class ALCToolsTest {
 
     @Test
     void invalidOperandCountIsReportedAsErrorText() {
-        ALCTools tools = new ALCTools(newBuilder(), entityService, model, false);
+        ELUTools tools = new ELUTools(newBuilder(), entityService, model, false);
 
         assertThat(tools.addIntersectToCurrentExpression(1)).startsWith("ERROR");
     }
@@ -96,7 +96,7 @@ class ALCToolsTest {
         ExpressionBuilder builder = newBuilder();
         when(entityService.resolveClass("an existing class", false, true)).thenReturn(NS + "ExistingClass");
 
-        ALCTools tools = new ALCTools(builder, entityService, model, false);
+        ELUTools tools = new ELUTools(builder, entityService, model, false);
         tools.addNamedClassToCurrentExpression("an existing class");
 
         assertThat(builder.collapse()).isEqualTo(model.createOntClass(NS + "ExistingClass"));
@@ -109,7 +109,7 @@ class ALCToolsTest {
         when(entityService.resolveClass("a doctor", false, true)).thenThrow(new EntityResolutionException(
                 "a doctor", List.of("a medical doctor")));
 
-        ALCTools tools = new ALCTools(builder, entityService, model, false);
+        ELUTools tools = new ELUTools(builder, entityService, model, false);
 
         assertThat(tools.addNamedClassToCurrentExpression("a doctor"))
                 .startsWith("ERROR")

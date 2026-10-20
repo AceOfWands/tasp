@@ -3,7 +3,7 @@ package com.github.aceofwands.tasp.service;
 import com.github.aceofwands.tasp.ai.FormulaBuilderAiService;
 import com.github.aceofwands.tasp.component.ExpressionBuilder;
 import com.github.aceofwands.tasp.component.IncompleteExpressionException;
-import com.github.aceofwands.tasp.component.toolSet.ALCTools;
+import com.github.aceofwands.tasp.component.toolSet.ELUTools;
 import com.github.aceofwands.tasp.model.Statement;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.service.AiServices;
@@ -47,7 +47,7 @@ public class AiService {
 
             FormulaBuilderAiService ai = AiServices.builder(FormulaBuilderAiService.class)
                     .chatModel(model)
-                    .tools(new ALCTools(builder, entityService, ontology, storeEntitiesIfNotFound))
+                    .tools(new ELUTools(builder, entityService, ontology, storeEntitiesIfNotFound))
                     .build();
             ai.buildExpression(current);
 
