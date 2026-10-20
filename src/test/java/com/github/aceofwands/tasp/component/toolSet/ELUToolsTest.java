@@ -118,4 +118,44 @@ class ELUToolsTest {
         org.assertj.core.api.Assertions.assertThatThrownBy(builder::collapse).isInstanceOf(java.util.NoSuchElementException.class);
     }
 
+    @Test
+    void bottomAndNominalAndHasValueAndHasSelfAreBuilt() {
+        when(entityService.resolveIndividual("gemelli", false, true)).thenReturn(NS + "Gemelli");
+        when(entityService.resolveProperty("works in", false, true)).thenReturn(NS + "worksIn");
+
+        ExpressionBuilder b1 = newBuilder();
+        new ELUTools(b1, entityService, model, false).addBottomConceptToCurrentExpression();
+        assertThat(b1.collapse()).isEqualTo(model.getOWLNothing());
+
+        ExpressionBuilder b2 = newBuilder();
+        assertThat(new ELUTools(b2, entityService, model, false).addNominalToCurrentExpression("gemelli")).isEqualTo("OK");
+        assertThat(b2.collapse()).isInstanceOf(OntClass.OneOf.class);
+
+        ExpressionBuilder b3 = newBuilder();
+        assertThat(new ELUTools(b3, entityService, model, false).addHasValueToCurrentExpression("works in", "gemelli")).isEqualTo("OK");
+        assertThat(b3.collapse()).isInstanceOf(OntClass.ObjectHasValue.class);
+
+        ExpressionBuilder b4 = newBuilder();
+        assertThat(new ELUTools(b4, entityService, model, false).addHasSelfToCurrentExpression("works in")).isEqualTo("OK");
+        assertThat(b4.collapse()).isInstanceOf(OntClass.HasSelf.class);
+    }
+
+    @Test
+    void dataRestrictionsAreBuiltAndInvalidDatatypeIsRejected() {
+        when(entityService.resolveDataProperty("age", false, true)).thenReturn(NS + "age");
+
+        ExpressionBuilder b1 = newBuilder();
+        ELUTools tools = new ELUTools(b1, entityService, model, false);
+        assertThat(tools.addDataSomeValuesFromToCurrentExpression("age", "xsd:integer")).isEqualTo("OK");
+        assertThat(b1.collapse()).isInstanceOf(OntClass.DataSomeValuesFrom.class);
+
+        ExpressionBuilder b2 = newBuilder();
+        tools = new ELUTools(b2, entityService, model, false);
+        assertThat(tools.addDataHasValueToCurrentExpression("age", "42", "xsd:integer")).isEqualTo("OK");
+        assertThat(b2.collapse()).isInstanceOf(OntClass.DataHasValue.class);
+
+        assertThat(new ELUTools(newBuilder(), entityService, model, false)
+                .addDataSomeValuesFromToCurrentExpression("age", "xsd:double")).startsWith("ERROR");
+    }
+
 }

@@ -112,6 +112,11 @@ public class EntityService {
         return resolveIri(description, EntityType.PROPERTY, storeIfMissing, callerCanRefine);
     }
 
+    /** For callers that can reformulate an ambiguous description: it is handed back as an {@link EntityResolutionException}. */
+    public String resolveDataProperty(String description, boolean storeIfMissing, boolean callerCanRefine) {
+        return resolveIri(description, EntityType.DATA_PROPERTY, storeIfMissing, callerCanRefine);
+    }
+
     public String resolveIndividual(String description) {
         return resolveIndividual(description, false);
     }
